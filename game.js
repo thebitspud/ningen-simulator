@@ -39,7 +39,7 @@ function create() {
 
 	platforms = this.physics.add.staticGroup();
 
-	ningen = this.physics.add.sprite(400, 520, 'ningen');
+	ningen = this.physics.add.sprite(400, 515, 'ningen');
 	ningen.setCollideWorldBounds(true);
 	this.physics.add.collider(ningen, platforms);
 
@@ -149,6 +149,7 @@ function resetLevel() {
 	});
 
 	ningen.setTint(0xffffff);
+	if(ningen.y > 515) ningen.setOrigin(ningen.x, 515);
 	gameOver = false;
 }
 
