@@ -28,20 +28,53 @@ function preload() {
 	this.load.image('axe', 'assets/axe.png');
 }
 
-var ningen, platforms, nunus, bombs,
+var ningen, platforms, movingPlatforms, nunus, bombs,
 	cursors, spacebar, lastDir,
 	nextLevel = 0, score = 0, collected = 0,
 	gameOver = false, allCollected = false,
 	scoreText, centerText;
 
 function create() {
-	this.add.image(0, 0, 'bg-ice').setOrigin(0, 0);
+	this.cameras.main.setSize(800, 600);
 
-	platforms = this.physics.add.staticGroup();
+	this.add.image(0, 0, 'bg-ice').setOrigin(0, 0);
 
 	ningen = this.physics.add.sprite(25, 520, 'ningen');
 	ningen.setCollideWorldBounds(true);
+	//this.cameras.main.startFollow(ningen);
+
+	platforms = this.physics.add.staticGroup();
+	movingPlatforms = this.physics.add.group();
+	bombs = this.physics.add.group();
+
+	nunus = this.physics.add.group({
+		key: 'nunu',
+		repeat: 9,
+		setXY: { x: 60, y: 0, stepX: 75 }
+	});
+	
+	nunus.children.iterate(function (child) {
+		child.setBounceY(Phaser.Math.FloatBetween(0.5, 0.8));
+		child.setCollideWorldBounds(true);
+	});
+
 	this.physics.add.collider(ningen, platforms);
+	this.physics.add.collider(nunus, platforms);
+	this.physics.add.collider(bombs, platforms);
+	this.physics.add.collider(bombs, movingPlatforms);
+	this.physics.add.collider(movingPlatforms, ningen);
+	this.physics.add.collider(movingPlatforms, nunus);
+
+	this.physics.add.overlap(ningen, nunus, collectNunu, null, this);
+	this.physics.add.collider(ningen, bombs, hitBomb, null, this);
+
+	scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
+	centerText = this.add.text(275, 16, '', { fontSize: '32px', fill: '#FFF'})
+
+	loadStage(nextLevel);
+
+	cursors = this.input.keyboard.createCursorKeys();
+	spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
 	this.anims.create({
 		key: 'left',
@@ -68,34 +101,6 @@ function create() {
 		frameRate: 10,
 		repeat: -1
 	});
-
-	cursors = this.input.keyboard.createCursorKeys();
-	spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-	nunus = this.physics.add.group({
-		key: 'nunu',
-		repeat: 9,
-		setXY: { x: 60, y: 0, stepX: 75 }
-	});
-	
-	nunus.children.iterate(function (child) {
-		child.setBounceY(Phaser.Math.FloatBetween(0.5, 0.8));
-		child.setCollideWorldBounds(true);
-	});
-
-	this.physics.add.collider(nunus, platforms);
-	this.physics.add.overlap(ningen, nunus, collectNunu, null, this);
-
-	scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
-	centerText = this.add.text(275, 16, '', { fontSize: '32px', fill: '#FFF'})
-
-	bombs = this.physics.add.group();
-
-	this.physics.add.collider(bombs, platforms);
-
-	this.physics.add.collider(ningen, bombs, hitBomb, null, this);
-
-	loadStage(nextLevel);
 }
 
 function resetLevel() {
@@ -125,9 +130,16 @@ function loadStage(level) {
 		child.disableBody(true, true);
 	});
 	platforms.clear(true);
-	platforms.create(400, 575, 'ground');
-	allCollected = false;
+
+	movingPlatforms.children.iterate(function (child) {
+		child.disableBody(true, true);
+	});
+	movingPlatforms.clear(true);
+
 	createPlatforms(level);
+	platforms.create(400, 575, 'ground');
+
+	allCollected = false;
 
 	bombs.children.iterate(function (child) {
 		child.x = 775;
@@ -137,38 +149,6 @@ function loadStage(level) {
 	nextLevel++;
 	ningen.x = 25;
 	ningen.y = 520;
-}
-
-function createPlatforms(level) {
-	switch(level) {
-		case 0: break;
-
-		case 1:
-		platforms.create(150, 250, 'platform');
-		platforms.create(650, 250, 'platform');
-		platforms.create(400, 400, 'platform');
-		break;
-
-		case 2:
-		platforms.create(600, 400, 'platform');
-		platforms.create(230, 300, 'platform');
-		platforms.create(750, 220, 'platform');
-		platforms.create(400, 410, 'platform');
-		platforms.create(150, 150, 'platform');
-		break;
-
-		case 3:
-		default:
-		platforms.create(550, 400, 'platform');
-		platforms.create(250, 450, 'platform');
-		platforms.create(750, 200, 'platform');
-		platforms.create(500, 250, 'platform');
-		platforms.create(420, 100, 'platform');
-		platforms.create(50, 330, 'platform');
-		platforms.create(250, 300, 'platform');
-		platforms.create(110, 120, 'platform');
-		break;
-	}
 }
 
 function update() {
@@ -219,6 +199,81 @@ function update() {
 	}
 }
 
+function createPlatforms(level) {
+	switch(level) {
+		case 0: break;
+
+		case 1:
+		platforms.create(150, 250, 'platform');
+		platforms.create(650, 250, 'platform');
+		platforms.create(400, 400, 'platform');
+		break;
+
+		case 2:
+		platforms.create(600, 400, 'platform');
+		platforms.create(230, 300, 'platform');
+		platforms.create(750, 220, 'platform');
+		platforms.create(400, 410, 'platform');
+		platforms.create(150, 150, 'platform');
+		break;
+
+		case 3:
+		platforms.create(550, 400, 'platform');
+		platforms.create(250, 450, 'platform');
+		platforms.create(750, 200, 'platform');
+		platforms.create(500, 250, 'platform');
+		platforms.create(420, 100, 'platform');
+		platforms.create(50, 330, 'platform');
+		platforms.create(250, 300, 'platform');
+		platforms.create(110, 120, 'platform');
+		break;
+
+		case 4:
+		spawnMovingPlatform(300, 250, 100, 0);
+		spawnMovingPlatform(600, 400, 50, 0);
+
+		platforms.create(50, 100, 'platform');
+		platforms.create(275, 100, 'platform');
+		platforms.create(525, 100, 'platform');
+		platforms.create(750, 100, 'platform');
+		break;
+
+		case 5:
+		default:
+
+		spawnMovingPlatform(400, 250, 100, 0);
+		spawnMovingPlatform(400, 50, 0, -50);
+
+		platforms.create(50, 200, 'platform');
+		platforms.create(225, 125, 'platform');
+		platforms.create(575, 125, 'platform');
+		platforms.create(750, 200, 'platform');
+		platforms.create(600, 350, 'platform');
+		platforms.create(200, 350, 'platform');
+
+		break;
+	}
+}
+
+function spawnBomb() {
+	var vx = Math.random() < 0.5 ? Phaser.Math.Between(-100, -150) : Phaser.Math.Between(100, 150);
+
+	var bomb = bombs.create(775, 300, 'bomb');
+		bomb.setBounce(1);
+		bomb.setCollideWorldBounds(true);
+		bomb.setVelocity(vx, 0);
+}
+
+function spawnMovingPlatform(x, y, vx, vy) {
+	var mpf = movingPlatforms.create(x, y, 'platform');
+	mpf.setCollideWorldBounds(true);
+	mpf.setVelocity(vx, vy);
+	mpf.setBounce(1);
+	mpf.body.setAllowGravity(false);
+	mpf.setImmovable();
+	mpf.body.setFriction(1);
+}
+
 function collectNunu (ningen, nunu) {
 	nunu.disableBody(true, true);
 
@@ -227,15 +282,6 @@ function collectNunu (ningen, nunu) {
 	scoreText.setText('Score: ' + score);
 
 	if(nunus.countActive(true) === 0) allCollected = true;
-}
-
-function spawnBomb() {
-	var vx = Math.random() < 0.5 ? Phaser.Math.Between(-100, -200) : Phaser.Math.Between(100, 200);
-
-	var bomb = bombs.create(775, 300, 'bomb');
-		bomb.setBounce(1);
-		bomb.setCollideWorldBounds(true);
-		bomb.setVelocity(vx, 25);
 }
 
 function hitBomb (ningen, bomb) {
