@@ -116,8 +116,11 @@ function resetLevel() {
 	});
 
 	bombs.children.iterate(function (child) {
+		var vx = Math.random() < 0.5 ? Phaser.Math.Between(-100, -150) : Phaser.Math.Between(100, 150);
+
 		child.x = 775;
 		child.y = 300;
+		child.setVelocity(vx, 0);
 	});
 
 	ningen.setTint(0xffffff);
@@ -142,8 +145,11 @@ function loadStage(level) {
 	allCollected = false;
 
 	bombs.children.iterate(function (child) {
+		var vx = Math.random() < 0.5 ? Phaser.Math.Between(-100, -150) : Phaser.Math.Between(100, 150);
+
 		child.x = 775;
-		child.y = 300
+		child.y = 300;
+		child.setVelocity(vx, 0);
 	});
 
 	nextLevel++;
