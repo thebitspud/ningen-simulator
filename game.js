@@ -127,14 +127,14 @@ function createPlatforms(level) {
 
 		case 3:
 		default:
-		platforms.create(600, 400, 'platform');
+		platforms.create(550, 400, 'platform');
 		platforms.create(250, 450, 'platform');
-		platforms.create(750, 400, 'platform');
+		platforms.create(750, 200, 'platform');
 		platforms.create(500, 250, 'platform');
 		platforms.create(420, 100, 'platform');
 		platforms.create(50, 330, 'platform');
 		platforms.create(250, 300, 'platform');
-		platforms.create(140, 120, 'platform');
+		platforms.create(110, 120, 'platform');
 		break;
 	}
 }
