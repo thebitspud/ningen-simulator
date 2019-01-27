@@ -119,8 +119,8 @@ function resetLevel() {
 		var vx = Math.random() < 0.5 ? Phaser.Math.Between(-100, -150) : Phaser.Math.Between(100, 150);
 
 		child.x = 775;
-		child.y = 300;
-		child.setVelocity(vx, 0);
+		child.y = 200;
+		child.setVelocity(vx, Phaser.Math.Between(0, 15));
 	});
 
 	ningen.setTint(0xffffff);
@@ -148,8 +148,8 @@ function loadStage(level) {
 		var vx = Math.random() < 0.5 ? Phaser.Math.Between(-100, -150) : Phaser.Math.Between(100, 150);
 
 		child.x = 775;
-		child.y = 300;
-		child.setVelocity(vx, 0);
+		child.y = 200;
+		child.setVelocity(vx, Phaser.Math.Between(0, 15));
 	});
 
 	nextLevel++;
@@ -264,10 +264,10 @@ function createPlatforms(level) {
 function spawnBomb() {
 	var vx = Math.random() < 0.5 ? Phaser.Math.Between(-100, -150) : Phaser.Math.Between(100, 150);
 
-	var bomb = bombs.create(775, 300, 'bomb');
+	var bomb = bombs.create(775, 200, 'bomb');
 		bomb.setBounce(1);
 		bomb.setCollideWorldBounds(true);
-		bomb.setVelocity(vx, 0);
+		bomb.setVelocity(vx, Phaser.Math.Between(0, 15));
 }
 
 function spawnMovingPlatform(x, y, vx, vy) {
