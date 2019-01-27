@@ -32,7 +32,7 @@ var ningen, platforms, nunus, bombs,
 	cursors, spacebar, lastDir,
 	nextLevel = 0, score = 0, collected = 0,
 	gameOver = false,
-	scoreText;
+	scoreText, centerText;
 
 function create() {
 	this.add.image(0, 0, 'bg-ice').setOrigin(0, 0);
@@ -89,6 +89,7 @@ function create() {
 	this.physics.add.overlap(ningen, nunus, collectNunu, null, this);
 
 	scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
+	centerText = this.add.text(275, 16, '', { fontSize: '32px', fill: '#FFF'})
 
 	bombs = this.physics.add.group();
 
@@ -99,9 +100,9 @@ function create() {
 
 function loadStage(level) {
 	platforms.children.iterate(function (child) {
-		child.disableBody(true, true);
+		child.disableBody(true, true);;
 	});
-	platforms.clear();
+	platforms.clear(true);
 	platforms.create(400, 575, 'ground');
 	createPlatforms(level);
 	nextLevel++;
@@ -140,9 +141,11 @@ function createPlatforms(level) {
 }
 
 function resetLevel() {
+	gameOver = false;
 	score -= (collected * 10);
 	collected = 0;
 	scoreText.setText('Score: ' + score);
+	centerText.setText('');
 
 	nunus.children.iterate(function (child) {
 		child.enableBody(true, child.x, 0, true, true);
@@ -150,7 +153,6 @@ function resetLevel() {
 
 	ningen.setTint(0xffffff);
 	if(ningen.y > 515) ningen.setOrigin(ningen.x, 515);
-	gameOver = false;
 }
 
 function update() {
@@ -220,8 +222,9 @@ function spawnBomb() {
 }
 
 function hitBomb (ningen, bomb) {
-	bomb.disableBody(true, true);
+	bomb.destroy();
 	ningen.anims.play('still-right');
+	centerText.setText('Press [Space] to Try Again');
 	ningen.setVelocity(0, 0);
 
 	ningen.setTint(0xff0000);
