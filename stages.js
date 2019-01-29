@@ -58,9 +58,8 @@ function loadObjects(level) { // create all the objects of a stage
 
 		for(i = 0; i < 3; i++) spawnNunu(250 + i * 150, 150);
 		for(i = 1; i <= 4; i++) spawnNunu(i * 175, 525);
-		spawnNunu(150, 250);
+		for(i = 0; i < 3; i++) spawnNunu(250 + i * 150, 250);
 		spawnNunu(400, 375);
-		spawnNunu(650, 250);
 
 		spawnBomb(100, 250, 150, 0);
 
