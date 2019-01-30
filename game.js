@@ -31,6 +31,7 @@ function preload() { // loading sprites
 let gameOver = false,
 	score = 0,
 	scoreText,
+	levelText,
 	infoText;
 
 function create() { // loading game components
@@ -39,8 +40,9 @@ function create() { // loading game components
 	this.add.image(0, 0, 'bg-ice').setOrigin(0, 0);
 
 	// adding game text
-	scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
-	infoText = this.add.text(275, 16, '', { fontSize: '32px', fill: '#FFF'})
+	scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '20px', fill: '#FFF' });
+	levelText = this.add.text(16, 40, 'Level: 0', { fontSize: '20px', fill: '#FFF'})
+	infoText = this.add.text(275, 16, '', { fontSize: '32px', fill: '#FFF'});
 
 	// initializing components
 	initControls(this);
@@ -53,13 +55,16 @@ function update() { // game update cycle
 	getInput();
 	onMpf = false;
 
-	if (ningen.x > 775 && allCollected) { // load next stage
-		nextLevel++;
-		loadStage(nextLevel);
-	}
+	if (ningen.x > 775 && allCollected) toNextLevel();
 }
 
 function changeScore(delta) { // change the player's score
 	score += delta;
 	scoreText.setText('Score: ' + score);
+}
+
+function toNextLevel() {
+	nextLevel++;
+	levelText.setText('Level: ' + nextLevel);
+	loadStage(nextLevel);
 }

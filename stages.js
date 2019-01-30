@@ -16,6 +16,7 @@ function loadStage(level) { // create a new stage
 	clearObjects(movingPlatforms);
 	clearObjects(bombs);
 	clearObjects(nunus);
+	clearObjects(bounds);
 
 	// reset nunu collection
 	collected = 0;
@@ -56,9 +57,8 @@ function loadObjects(level) { // create all the objects of a stage
 		spawnPlatform(400, 425);
 		spawnPlatform(650, 300);
 
-		for(i = 0; i < 3; i++) spawnNunu(250 + i * 150, 150);
-		for(i = 1; i <= 4; i++) spawnNunu(i * 175, 525);
-		for(i = 0; i < 3; i++) spawnNunu(250 + i * 150, 250);
+		for(i = 0; i < 3; i++)for(j = 0; j < 2; j++) spawnNunu(250 + i * 150, 150 + j * 100);
+		for(i = 1; i <= 3; i++) spawnNunu(i * 200, 525);
 		spawnNunu(400, 375);
 
 		spawnBomb(100, 250, 150, 0);
@@ -75,7 +75,7 @@ function loadObjects(level) { // create all the objects of a stage
 		spawnPlatform(600, 425);
 		spawnPlatform(725, 300);
 
-		for(i = 0; i < 3; i++) spawnNunu(275 + i * 150, 525);
+		for(i = 0; i < 4; i++) spawnNunu(275 + i * 150, 525);
 		spawnNunu(125, 125);
 		spawnNunu(250, 250);
 		spawnNunu(400, 375);
@@ -83,7 +83,6 @@ function loadObjects(level) { // create all the objects of a stage
 		spawnNunu(600, 125);
 		spawnNunu(725 , 250);
 
-		spawnBomb(50, 100, 150, 0);
 		spawnBomb(500, 325, 150, 0);
 
 		break;
@@ -111,7 +110,6 @@ function loadObjects(level) { // create all the objects of a stage
 		spawnNunu(725, 50);
 		spawnNunu(725, 350);
 
-		spawnBomb(125, 100, 150, 0);
 		spawnBomb(700, 50, 150, 0);
 		spawnBomb(700, 500, 150, 0);
 
@@ -135,7 +133,6 @@ function loadObjects(level) { // create all the objects of a stage
 		spawnNunu(675, 300);
 
 		spawnBomb(200, 50, 150, 0);
-		spawnBomb(600, 50, -150, 0);
 		spawnBomb(400, 50, 0, 0);
 
 		spawnMovingPlatform(300, 275, 100, 0);
@@ -163,11 +160,11 @@ function loadObjects(level) { // create all the objects of a stage
 		spawnNunu(400, 400);
 
 		spawnBomb(150, 50, 150, 0);
-		spawnBomb(650, 50, -150, 0);
 		spawnBomb(400, 50, 0, -150);
+		spawnBomb(650, 50, -150, 0);
 
-		spawnMovingPlatform(400, 200, 0, 75);
 		spawnMovingPlatform(200, 225, -100, 0);
+		spawnMovingPlatform(400, 200, 0, 75);
 		spawnMovingPlatform(600, 225, 100, 0);
 		
 		spawnBound(25, 225);
